@@ -1,0 +1,31 @@
+Q1: Review the data in "tmdb-5000.zip". (You can open .csv files using Microsoft Excel or any text editor.)
+
+Which normal form is it in? Justify your answer using the same terminology that we used in class.
+
+-----------------------------------
+... your answer here ...
+-----------------------------------
+
+Q2: Consider the file "tmdb_5000_movies.csv". Suppose that it only had two columns: id and genres. Assume that there are no other columns or tables.
+
+How can you restructure this data so that it is in the 3NF? Justify your answer.
+
+-----------------------------------
+... your answer here ...
+-----------------------------------
+
+Q3: Review the data in "movies.nt". You can use any text editor to open this file. You don't have to use Python scripts for this question, you can just use search in a text editor or Unix command line tools.
+
+List all genre names (e.g., Action, Comedy, etc.) for the movie represented by the blank node _:m_228161.
+
+-----------------------------------
+... your answer here ...
+-----------------------------------
+
+Q4: Consider the following sentence: "Adelaide is the state capital of South Australia" (you knew that, right?). Encode this information in N-Triples format. Appropriately use blank nodes, URIs and string literals. Note that the sentence has some implied information that also needs to be included (e.g., what is South Australia? Do you need to provide more context for how you just described South Australia?).
+
+You can use "movies.nt" as a reference. Paste your answer here, rather rather than creating a new .nt file.
+
+-----------------------------------
+... your answer here ...
+-----------------------------------
