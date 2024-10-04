@@ -72,11 +72,15 @@ def _parse_line(line):
 
 def _compute_stats():
     # ... you can add variables here ...
-    n_triples = 0
-    n_people = set()
-    actor_movie_count ={}
-    actor_weight = {}
-    max_movies = 0
+    n_triples = 0 #total of triples
+    n_people = set() #number of distinct people mentioned in ANY role
+    actor_movie_count = {} #map each actor to movie they are in
+
+    #variables to calculate highweight
+    a_weight = {} #map actor to weight
+    a_names = {} #map actor URL to name
+    a_order = {} #track actor's order
+    
     # open file and read it line by line
     # assume utf8 encoding, ignore non-parseable characters
     with open(data_file, encoding="utf8", errors="ignore") as f:
@@ -94,25 +98,33 @@ def _compute_stats():
     ###########################################################
             #increment number of triples
             n_triples+= 1
-            #track district person
-            if  _is_uri(s) and s.startswith(uri_person):
-                n_people.add(s)
-            #count movies per actor
-            if p == predicate_has_actor:
-                actor = o
-                if _is_uri(actor) and actor.startswith(uri_person):
-                    if actor not in actor_movie_count:
-                        actor_movie_count[actor] = 0
-                    actor_movie_count[actor] += 1
-                    #track max movies that actor is in
-                    max_movies = max(max_movies, actor_movie_count[actor])
             
-            #calculate actor weight
-            if p.startwith(predicate_prefix):
-                if p == predicate_has_actor:
-                    order = len(actor_weight) + 1
-                    actor_weight[o] = actor_weight.get(o, 0) + (1 / order)
+            #track district person
+            if  _is_uri(s) or _is_blank_node(s):
+                n_people.add(s)
 
+            # Store actor names
+            if p == predicate_has_name:
+                a_names[s] = o.strip('"')
+        
+            #count movies per actor
+            if p == predicate_has_actor and (_is_uri(o) or _is_blank_node(o)):
+                if o not in actor_movie_count:
+                    actor_movie_count[o] = 0
+                    a_weight[o] = 0
+
+                actor_movie_count[o] += 1
+
+                #track the order
+                if s not in a_order:
+                    a_order[s] = []
+
+                a_order[s].append(o)
+                
+                #calculate weight
+                weight = 1 / len(a_order[s])
+                a_weight[o] += weight 
+            
     ###########################################################
     # n_triples -- number of distinct triples
     # n_people -- number of distinct people mentioned in ANY role
@@ -128,15 +140,28 @@ def _compute_stats():
     # s_name -- the name of the highweight actor
     ###########################################################
 
-    #total of distinct people
+    #number of distinct triples
     n_people = len(n_people)
 
-    #total number of top actors
-    n_top_actors = sum(1 for count in actor_movie_count.values() if count == max_movies)
+    #calcule max movies
+    max_movies = 0
+    for count in actor_movie_count.values():
+        if count > max_movies:
+            max_movies = count
+
+
+    #calculate top actors is in max movies
+    n_top_actors = 0
+    for count in actor_movie_count.values():
+        if count == max_movies:
+            n_top_actors += 1
+
 
     #calculate highweight actor and name
-    n_highweight_actor = max(actor_weight.values(), default=0)
-    s_name = max(actor_weight, key=actor_weight.get, default="")
+    n_highweight_actor = max(a_weight.values())
+    
+    s_name = a_names.get(max(a_weight, key=a_weight.get), "")
+
 
     return n_triples, n_people, n_top_actors, n_highweight_actor, s_name
 
