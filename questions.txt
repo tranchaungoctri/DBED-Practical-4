@@ -4,6 +4,9 @@ Which normal form is it in? Justify your answer using the same terminology that 
 
 -----------------------------------
 ... your answer here ...
+Both of the tables are in UNF because for it to be in 1NF, the attributes must be atomic. 
+We can see in both tables have at least 1 column where it is a JSON array rather than atomic values (For example: genre in movies table and cast in credits table)
+Since it is not 1NF, it can't be 2NF and 3NF.
 -----------------------------------
 
 Q2: Consider the file "tmdb_5000_movies.csv". Suppose that it only had two columns: id and genres. Assume that there are no other columns or tables.
@@ -12,6 +15,25 @@ How can you restructure this data so that it is in the 3NF? Justify your answer.
 
 -----------------------------------
 ... your answer here ...
+First we modify the table for it to be 1NF (the attributes must be atomic).
+We can split it into 3 columns: ID, Genre ID and Genre Name
+For example: The first movie
+ID       Genre ID        Genre Name
+19995	   28	           Action
+19995	   12	          Adventure
+19995	   14	           Fantasy
+19995	   878	       Science Fiction
+Second, we must transform the table into 2NF (all non-prime attributes must depend on the primary key)
+We must seperate the ID and Genre ID into different table.
+We can have the ID table, Genre table and ID-Genre table where: (PK: Primary Key, FK: Foreign Key)
+In ID table, have ID column (PK) and another column could be the name of the movie. 
+In Genre table, have Genre ID column (PK) and Genre Name. 
+In ID-Genre table, have ID (FK) and Genre ID (FK) column
+Third, for the table we have can be 3NF, it must not have any transitive dependencies.
+We already did that by seperate 3 tables in second step.
+In ID table, Movie's name depends on ID column (PK)
+In Genre table, Genre Name depends on Genre ID column (PK)
+In ID-Genre table, we have ID (FK) and Genre ID (FK), no non-key atrributes.
 -----------------------------------
 
 Q3: Review the data in "movies.nt". You can use any text editor to open this file. You don't have to use Python scripts for this question, you can just use search in a text editor or Unix command line tools.
@@ -20,6 +42,7 @@ List all genre names (e.g., Action, Comedy, etc.) for the movie represented by t
 
 -----------------------------------
 ... your answer here ...
+Fantasy, Comedy, Animation, Science Fiction, Family
 -----------------------------------
 
 Q4: Consider the following sentence: "Adelaide is the state capital of South Australia" (you knew that, right?). Encode this information in N-Triples format. Appropriately use blank nodes, URIs and string literals. Note that the sentence has some implied information that also needs to be included (e.g., what is South Australia? Do you need to provide more context for how you just described South Australia?).
@@ -28,4 +51,12 @@ You can use "movies.nt" as a reference. Paste your answer here, rather rather th
 
 -----------------------------------
 ... your answer here ...
+_:city_adelaide <http://adelaide.edu.au/dbed/hasType> <http://adelaide.edu.au/dbed/City> .
+_:city_adelaide <http://adelaide.edu.au/dbed/hasName> "Adelaide".
+_:city_adelaide <http://adelaide.edu.au/dbed/hasCapitalOf> _:state_south_australia .
+
+_:state_south_australia <http://adelaide.edu.au/dbed/hasType> <http://adelaide.edu.au/dbed/State> .
+_:state_south_australia <http://adelaide.edu.au/dbed/hasName> "South Australia".
+_:state_south_australia <http://adelaide.edu.au/dbed/isPartOf> <http://adelaide.edu.au/dbed/Australia> .
+
 -----------------------------------
