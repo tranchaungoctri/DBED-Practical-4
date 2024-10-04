@@ -100,15 +100,17 @@ def _compute_stats():
             n_triples+= 1
             
             #track district person
-            if  _is_uri(s) or _is_blank_node(s):
-                n_people.add(s)
+            if p == predicate_has_name:
+                name = o.strip('"')
+                if name not in n_people:
+                    n_people.add(name)
 
             # Store actor names
             if p == predicate_has_name:
                 a_names[s] = o.strip('"')
         
             #count movies per actor
-            if p == predicate_has_actor and (_is_uri(o) or _is_blank_node(o)):
+            if p == predicate_has_actor and _is_blank_node(o):
                 if o not in actor_movie_count:
                     actor_movie_count[o] = 0
                     a_weight[o] = 0
@@ -142,7 +144,7 @@ def _compute_stats():
 
     #number of distinct triples
     n_people = len(n_people)
-
+ 
     #calcule max movies
     max_movies = 0
     for count in actor_movie_count.values():
